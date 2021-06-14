@@ -81,16 +81,33 @@
 
       const seconds = now.getSeconds();
       const secondsDegress = (seconds / 60) * 360 + 90; 
-      secondsHand.style.transform = `rotate(${secondsDegress}deg)`;
+      setHandPosition(secondsHand, secondsDegress);
 
       const mins = now.getMinutes();
       const minDegress = (mins / 60) * 360 + 90;
-      minsHand.style.transform = `rotate(${minDegress}deg)`;
+      setHandPosition(minsHand, minDegress);
 
       const hours = now.getHours();
-      const hourDegrees = (hours / 24) * 360 + 12;
-      hourHand.style.transform = `rotate(${hourDegrees}deg)`;
+      const hourDegrees = (hours / 24) * 360 + 90;
+      setHandPosition(hourHand, hourDegrees);
 
+    }
+
+    function setHandPosition(elem, deg) {
+      if(deg !== 90) {
+        elem.style.transform = `rotate(${deg}deg)`;
+        return;
+      }
+      elem.addEventListener('transitionend', exception0DegHandler);
+      elem.style.transform = `rotate(450deg)`;
+    }
+
+    function exception0DegHandler() {
+      console.log('Exception!')
+      this.style.transitionProperty = 'none';
+      this.style.transform = `rotate(90deg)`;
+      setTimeout(() => this.style.transitionProperty = 'transform');
+      this.removeEventListener('transitionend', exception0DegHandler);
     }
 
     setInterval(setDate, 1000)
